@@ -2,7 +2,7 @@
 
 > The command that can save you typing 15 characters or more, each time!
 
-[![CircleCI](https://circleci.com/gh/Cloudstek/zsh-plugin-appup.svg?style=svg)](https://circleci.com/gh/Cloudstek/zsh-plugin-appup)
+[![Tests](https://github.com/mdeboer/zsh-plugin-appup/actions/workflows/zunit.yml/badge.svg)](https://github.com/mdeboer/zsh-plugin-appup/actions/workflows/zunit.yml) ![GitHub Issues](https://img.shields.io/github/issues/mdeboer/zsh-plugin-appup) ![GitHub Pull Requests](https://img.shields.io/github/issues-pr/mdeboer/zsh-plugin-appup)
 
 This plugins adds `start`, `restart`, `stop`, `up` and `down` commands when it detects a docker-compose or Vagrant file
 in the current directory (e.g. your application). Just run `up` and get coding! This saves you typing `docker-compose`
