@@ -1,0 +1,53 @@
+#!/usr/bin/env zunit
+
+@setup {
+    load ../appup.plugin.zsh
+
+    _tmp_setup
+}
+
+@teardown {
+    _tmp_teardown
+}
+
+@test 'Docker compose enter' {
+    local test_files=('compose.yaml' 'compose.yml' 'docker-compose.yaml' 'docker-compose.yml')
+
+    for f in $test_files; do
+        _tmp_setup
+        touch "$f"
+
+        run enter my-container
+
+        assert $state equals 0
+        assert "$output" same_as 'docker compose exec my-container /bin/bash -l'
+    done
+}
+
+@test 'Docker compose enter (with env files and arguments)' {
+    touch compose.yaml
+
+    zstyle ':omz:plugins:appup:docker' env-files .env .env.foo .env.local
+
+    touch .env
+    touch .env.local
+
+    run enter my-container /bin/sh -l foo bar
+
+    assert $state equals 0
+    assert "$output" same_as 'docker compose exec my-container /bin/sh -l foo bar'
+}
+
+@test 'Docker compose enter (without any arguments)' {
+    touch compose.yaml
+
+    zstyle ':omz:plugins:appup:docker' env-files .env .env.foo .env.local
+
+    touch .env
+    touch .env.local
+
+    run enter
+
+    assert $state equals 0
+    assert "$output" is_empty
+}

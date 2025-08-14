@@ -1,0 +1,31 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+
+  workflow_dispatch: ~
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install ZSH
+        run: |
+          sudo apt update
+          sudo apt install -y zsh curl ca-certificates --no-install-recommends
+
+      - name: Install ZUnit
+        run: |
+          sudo curl -o /usr/local/bin/zunit -L https://github.com/zunit-zsh/zunit/releases/download/v0.8.2/zunit
+          sudo curl -o /usr/local/bin/revolver -L https://raw.githubusercontent.com/molovo/revolver/master/revolver 
+          sudo curl -o /usr/local/bin/color -L https://raw.githubusercontent.com/molovo/color/master/color.zsh 
+          sudo chmod +x /usr/local/bin/{color,revolver,zunit}
+          sudo chmod +x tests/_support/bin/*
+
+      - name: Run tests
+        run: zunit

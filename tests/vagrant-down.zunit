@@ -1,7 +1,6 @@
 #!/usr/bin/env zunit
 
 @setup {
-    load _support/vagrant
     load ../appup.plugin.zsh
     
     _tmp_setup
@@ -12,7 +11,7 @@
 }
 
 @test 'Vagrant down' {
-    _setup_simple_env
+    touch Vagrantfile
 
     run down
     
@@ -21,24 +20,10 @@
 }
 
 @test 'Vagrant down (with arguments)' {
-    _setup_simple_env
+    touch Vagrantfile
 
     run down mysql -f
     
     assert $state equals 0
     assert "$output" same_as 'vagrant destroy mysql -f'
-}
-
-@test 'Vagrant down (without vagrant file)' {
-    run down
-    
-    assert $state equals 0
-    assert "$output" is_empty
-}
-
-@test 'Vagrant down (with arguments, without vagrant file)' {
-    run down mysql -f
-    
-    assert $state equals 0
-    assert "$output" is_empty
 }

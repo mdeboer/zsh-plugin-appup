@@ -1,0 +1,28 @@
+#!/usr/bin/env zunit
+
+@setup {
+    load ../appup.plugin.zsh
+
+    _tmp_setup
+}
+
+@teardown {
+    _tmp_teardown
+}
+
+@test 'Down (without any files)' {
+    run down
+
+    assert $state equals 255
+    assert "$output" is_empty
+}
+
+@test 'Down (with both docker compose file and vagrant file)' {
+    touch compose.yaml
+    touch Vagrantfile
+
+    run down
+
+    assert $state equals 0
+    assert "$output" same_as 'docker compose down'
+}

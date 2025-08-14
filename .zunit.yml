@@ -3,6 +3,6 @@ directories:
   tests: tests
   output: tests/_output
   support: tests/_support
-time_limit: 30
+time_limit: 5
 fail_fast: false
 allow_risky: false
