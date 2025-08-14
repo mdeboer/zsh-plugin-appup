@@ -1,0 +1,36 @@
+#!/usr/bin/env zunit
+
+@setup {
+    load ../appup.plugin.zsh
+
+    _tmp_setup
+}
+
+@teardown {
+    _tmp_teardown
+}
+
+@test 'Enter (without any files)' {
+    run enter my-container
+
+    assert $state equals 0
+    assert "$output" is_empty
+}
+
+@test 'Enter (without any files or arguments)' {
+    run enter
+
+    assert $state equals 0
+    assert "$output" is_empty
+}
+
+
+@test 'Enter (with both docker compose file and vagrant file)' {
+    touch compose.yaml
+    touch Vagrantfile
+
+    run enter my-container
+
+    assert $state equals 0
+    assert "$output" same_as 'docker compose exec my-container /bin/bash -l'
+}

@@ -1,15 +1,18 @@
 #!/usr/bin/env zsh
 
 if [ -z "$TERM" ]; then
-  export TERM=xterm
+    export TERM=xterm
 fi
 
 export APPUP_TMP=/tmp/appup_test
 export PATH="${PWD}/tests/_support/bin:${PATH}"
 
+zstyle -d ':omz:plugins:appup:*'
+
 _tmp_setup () {
     rm -Rf $APPUP_TMP
     mkdir $APPUP_TMP
+    cd $APPUP_TMP || exit 1
 }
 
 _tmp_teardown () {

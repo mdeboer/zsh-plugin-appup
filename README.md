@@ -8,13 +8,6 @@ This plugins adds `start`, `restart`, `stop`, `up` and `down` commands when it d
 in the current directory (e.g. your application). Just run `up` and get coding! This saves you typing `docker-compose`
 or `vagrant` every time or aliasing them. Also gives you one set of commands that work for both environments.
 
-### Docker
-
-Aside from simply running `up`, you can also extend your configuration by running `up <name>`, which will
-run `docker-compose` with both `docker-compose.yml` and extend it with `docker-compose.<name>.yml`. For more on
-extending please see the [official docker documentation](https://docs.docker.com/compose/extends). Additional arguments
-will be directly supplied to the docker-compose.
-
 ### Vagrant
 
 Vagrant doesn't have a `down`, `restart`, `start` or `stop` commands natively but don't worry, that's been taken care of
@@ -30,44 +23,66 @@ supplied to vagrant.
 | start   | [up](https://www.vagrantup.com/docs/cli/up.html)           | [start](https://docs.docker.com/compose/reference/start/)     |
 | restart | [reload](https://www.vagrantup.com/docs/cli/reload.html)   | [restart](https://docs.docker.com/compose/reference/restart/) |
 | stop    | [halt](https://www.vagrantup.com/docs/cli/halt.html)       | [stop](https://docs.docker.com/compose/reference/stop/)       |
-| enter   |                                                            | [exec](https://docs.docker.com/compose/reference/exec/) /bin/bash -l (or custom command/shell, e.g. with `enter /bin/sh`)      |
+
+#### Enter command
+
+There is one extra command that doesn't map to either Vagrant or Docker natively. Currently it is only implemented for
+Docker and allows you to quickly open a shell in a container.
+
+```shell
+enter my-container          # Spawns /bin/bash -l in my-container
+enter my-container /bin/sh  # Spawns /bin/sh in my-container (useful for Alpine based images) 
+```
 
 ## Installation
 
 ### oh-my-zsh
 
-1. Clone this repository in `$ZSH_CUSTOM/plugins/appup`:
+1. Clone this repository to `$ZSH_CUSTOM/plugins/appup`.
+2. Edit your `.zshrc` and add `appup` to the list of plugins.
 
-   ```bash
-   git clone https://github.com/Cloudstek/zsh-plugin-appup.git "$ZSH_CUSTOM/plugins/appup"
-   ```
-2. Edit `~/.zshrc` and add `appup` to the list of plugins
+### Antidote
+
+```shell
+antidote install mdeboer/zsh-plugin-appup
+```
+
+### Antigen
+
+```shell
+antigen bundle mdeboer/zsh-plugin-appup
+```
+
+### ZI
+
+```shell
+zi load mdeboer/zsh-plugin-appup
+```
 
 ### Plain ZSH
 
 1. Clone this repository somewhere
-
-2. Edit your `~/.zshrc` and add this line near the bottom of the file:
-
-   ```bash
-   source path/to/the/repository/appup.plugin.zsh
-   ```
-
-## Updating
-
-1. Go to the directory where you cloned the plugin repository
-2. Run `git pull origin master`
+2. Edit your `.zshrc` and `source` the `appup.plugin.zsh` somewhere:
 
 ## Configuration options
 
-AppUp has a few configuration options to customise its behaviour. Please make sure you define these in `~/.zshrc`
-*before* you load any plugins.
+This plugin has a few configuration options to customise its behaviour. Please make sure you define these in your
+`.zshrc` file *before* you load any plugins.
 
-Currently these options only affect docker.
+For more information about `zstyle`, see the man page `zshmodules(1)`.
 
-| Name                 | Values     | Default | Description                                                                                                                                       |
-|----------------------|------------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------|
-| APPUP_CHECK_STARTED  | true/false | true    | Enable/disable checking if docker is running completely.                                                                                          |
-| APPUP_DOCKER_MACHINE | true/false | true    | If both docker (e.g. Docker Desktop) and docker-machine are installed, check if docker-machine (when `true`) or docker (when `false`) is running. |
-| APPUP_LOAD_ENVS      | true/false | true    | When true, load .env, .env.local, .env.docker and .env.docker.local if they exist with `docker compose --env-file`.                               | 
+| Option                                       | Values | Default | Description                                                                                                                                   |
+|----------------------------------------------|--------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| `':omz:plugins:appup:docker' check-started`  | yes/no | no      | Enable/disable checking if docker is running.                                                                                                 |
+| `':omz:plugins:appup:docker' docker-machine` | yes/no | no      | If both docker (e.g. Docker Desktop) and docker-machine are installed, check if docker-machine (when `yes`) or docker (when `no`) is running. |
+| `':omz:plugins:appup:docker' env-files`      | array  |         | Additional env files to load (if they exist) when running `up` (adds `--env-file=...` arguments to the docker compose command).               | 
 
+### Example
+
+```shell
+zstyle ':omz:plugins:appup:docker' check-started yes
+zstyle ':omz:plugins:appup:docker' docker-machine no
+zstyle ':omz:plugins:appup:docker' env-files .env.foo .env.bar # Will also load .env.foo and/or .env.bar if they exist.
+
+# Load the plugin here...
+```

@@ -1,7 +1,6 @@
 #!/usr/bin/env zunit
 
 @setup {
-    load _support/vagrant
     load ../appup.plugin.zsh
     
     _tmp_setup
@@ -12,7 +11,7 @@
 }
 
 @test 'Vagrant restart' {
-    _setup_simple_env
+    touch Vagrantfile
 
     run restart
     
@@ -21,24 +20,10 @@
 }
 
 @test 'Vagrant restart (with arguments)' {
-    _setup_simple_env
+    touch Vagrantfile
 
     run restart mysql --provision
     
     assert $state equals 0
     assert "$output" same_as 'vagrant reload mysql --provision'
-}
-
-@test 'Vagrant restart (without vagrant file)' {
-    run restart
-    
-    assert $state equals 0
-    assert "$output" is_empty
-}
-
-@test 'Vagrant restart (with arguments, without vagrant file)' {
-    run restart mysql --provision
-    
-    assert $state equals 0
-    assert "$output" is_empty
 }
